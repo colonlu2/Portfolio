@@ -3,7 +3,10 @@ class PortfolioApp {
     constructor() {
         this.projects = [];
         // Password hash (SHA-256 of "portfolio2024") - Change this to your own password
-        // To generate: use online SHA-256 hash generator with your password
+        // SECURITY NOTE: This is client-side authentication only - the hash is visible in source code.
+        // This provides basic protection against casual unauthorized edits but is NOT secure against
+        // determined users. For production use with sensitive data, implement server-side authentication.
+        // To generate hash: See README.md for secure methods
         this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';  // Default: "portfolio2024"
         this.loadProjects();
         this.initAuth();
@@ -66,6 +69,8 @@ class PortfolioApp {
     }
 
     isAuthenticated() {
+        // Note: sessionStorage can be manipulated via browser dev tools
+        // This is acceptable for a client-side portfolio but not for sensitive applications
         return sessionStorage.getItem('portfolio_auth') === 'true';
     }
 

@@ -20,6 +20,13 @@ A professional portfolio website for showcasing projects with support for upload
 
 The portfolio is password protected to prevent unauthorized users from adding or deleting projects. 
 
+**⚠️ IMPORTANT SECURITY NOTES:**
+- This is a **client-side only** authentication mechanism suitable for personal portfolios
+- The password hash is visible in the source code (script.js)
+- Tech-savvy users could bypass this protection using browser developer tools
+- For sensitive data or professional use, consider implementing server-side authentication
+- This protection is designed to prevent casual unauthorized edits, not to secure critical data
+
 ### Default Password
 
 The default password is: `portfolio2024`
@@ -29,10 +36,10 @@ The default password is: `portfolio2024`
 ### Changing the Password
 
 1. Choose a strong password
-2. Generate a SHA-256 hash of your password using an online tool like:
-   - https://emn178.github.io/online-tools/sha256.html
+2. Generate a SHA-256 hash of your password. **DO NOT use online tools** as they may log your password. Instead:
+   - Use your browser console: `crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(h => console.log([...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('')))`
    - Or use command line: `echo -n "yourpassword" | sha256sum`
-3. Open `script.js` and find this line:
+3. Open `script.js` and find this line (around line 7):
    ```javascript
    this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';
    ```
