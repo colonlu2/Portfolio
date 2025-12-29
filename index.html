@@ -40,7 +40,26 @@
         <section id="upload">
             <div class="container">
                 <h2>Add New Project</h2>
-                <form id="project-form" class="upload-form">
+                
+                <!-- Login Form (shown when not authenticated) -->
+                <div id="auth-container" class="auth-container" style="display: none;">
+                    <form id="login-form" class="upload-form">
+                        <p class="auth-message">This section is password protected. Please enter your password to manage projects.</p>
+                        <div class="form-group">
+                            <label for="admin-password">Password</label>
+                            <input type="password" id="admin-password" name="password" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn-primary">Login</button>
+                    </form>
+                </div>
+
+                <!-- Upload Form (shown when authenticated) -->
+                <div id="upload-container" style="display: none;">
+                    <div class="auth-header">
+                        <p class="auth-status">✓ Authenticated</p>
+                        <button id="logout-btn" class="btn-logout">Logout</button>
+                    </div>
+                    <form id="project-form" class="upload-form">
                     <div class="form-group">
                         <label for="project-title">Project Title *</label>
                         <input type="text" id="project-title" name="title" required>
@@ -87,8 +106,9 @@
                         <input type="text" id="project-links" name="links" placeholder="https://github.com/username/project">
                     </div>
 
-                    <button type="submit" class="btn-primary">Add Project</button>
-                </form>
+                        <button type="submit" class="btn-primary">Add Project</button>
+                    </form>
+                </div>
             </div>
         </section>
 

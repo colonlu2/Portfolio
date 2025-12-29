@@ -4,6 +4,7 @@ A professional portfolio website for showcasing projects with support for upload
 
 ## Features
 
+- **Password Protected Editing**: Only authorized users can add or delete projects
 - **Project Upload Form**: Add new projects with titles, descriptions, and categories
 - **Multi-Media Support**: 
   - Upload and display project images/screenshots
@@ -13,14 +14,46 @@ A professional portfolio website for showcasing projects with support for upload
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Local Storage**: Projects are saved in browser's local storage for persistence
 - **Interactive Media Gallery**: Click on images and videos to view in full-screen modal
-- **Project Management**: Delete projects as needed
+- **Project Management**: Delete projects as needed (requires authentication)
+
+## Security
+
+The portfolio is password protected to prevent unauthorized users from adding or deleting projects. 
+
+### Default Password
+
+The default password is: `portfolio2024`
+
+**⚠️ IMPORTANT: Change this password before deploying your portfolio!**
+
+### Changing the Password
+
+1. Choose a strong password
+2. Generate a SHA-256 hash of your password using an online tool like:
+   - https://emn178.github.io/online-tools/sha256.html
+   - Or use command line: `echo -n "yourpassword" | sha256sum`
+3. Open `script.js` and find this line:
+   ```javascript
+   this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';
+   ```
+4. Replace the hash with your new password hash
+5. Save the file and deploy
+
+### How Authentication Works
+
+- The "Add Project" section requires password authentication
+- Authentication persists only for the current browser session (sessionStorage)
+- When you close the browser tab, you'll need to log in again
+- Delete buttons on projects only appear when authenticated
+- Visitors can view all projects but cannot edit or add content
 
 ## Usage
 
 ### Adding a Project
 
 1. Navigate to the "Add Project" section
-2. Fill in the project details:
+2. Enter the password when prompted
+3. Fill in the project details:
    - **Project Title**: Name of your project
    - **Description**: Detailed description of what the project does
    - **Category**: Select the appropriate category (Web Development, Mobile App, Data Science, AI/ML, Hardware/IoT, Other)
