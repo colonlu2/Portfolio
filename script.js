@@ -142,10 +142,10 @@ class PortfolioApp {
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';
 
-        // Show success message with instructions
-        this.showMessage(`Password changed successfully! IMPORTANT: You must manually update script.js with your new password hash to make it permanent. Your new hash is: ${newHash}`, 'success');
+        // Show success message (without exposing hash in UI for security)
+        this.showMessage('Password changed successfully! Check the browser console for your new password hash and instructions to make it permanent.', 'success');
         
-        // Also log the hash to console for easy copying
+        // Log the hash to console for copying
         // Note: Clear your browser console after copying the hash for security
         console.log(`${'='.repeat(80)}
 PASSWORD CHANGE SUCCESSFUL
@@ -153,8 +153,11 @@ ${'='.repeat(80)}
 Your new password hash is:
 ${newHash}
 
-To make this change permanent, update script.js line 10:
-this.passwordHash = '${newHash}';
+To make this change permanent:
+1. Open script.js in your editor
+2. Find the line: this.passwordHash = '...'
+3. Replace the hash value with: '${newHash}'
+4. Save the file and redeploy
 
 SECURITY NOTE: Clear your browser console after copying the hash.
 ${'='.repeat(80)}`);
@@ -429,7 +432,7 @@ ${'='.repeat(80)}`);
     }
 
     showMessage(text, type) {
-        const form = document.getElementById('project-form') || document.getElementById('login-form');
+        const form = document.getElementById('project-form') || document.getElementById('login-form') || document.getElementById('password-change-form');
         if (!form) return;
 
         const existing = form.parentElement.querySelector('.message');
