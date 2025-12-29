@@ -66,6 +66,27 @@ The default password is: `portfolio2024`
 
 ### Changing the Password
 
+**Method 1: Using the Editor Interface (Recommended)**
+
+1. Open `editor.html` and log in with your current password
+2. Navigate to the "Change Password" section
+3. Fill in the form:
+   - Enter your current password
+   - Enter your new password
+   - Confirm your new password
+4. Click "Change Password"
+5. The system will generate a new password hash and display it
+6. **IMPORTANT**: To make the change permanent:
+   - Open `script.js` and find this line (around line 10):
+     ```javascript
+     this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';
+     ```
+   - Replace the hash with your new password hash (shown in the success message and browser console)
+   - Save the file and redeploy
+7. The new password will work immediately in the current session, but you must update `script.js` to persist it
+
+**Method 2: Manual Hash Generation**
+
 1. Choose a strong password
 2. Generate a SHA-256 hash of your password. **DO NOT use online tools** as they may log your password. Instead:
    - Use your browser console: `crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(h => console.log([...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('')))`
@@ -76,6 +97,7 @@ The default password is: `portfolio2024`
    ```
 4. Replace the hash with your new password hash
 5. Save the file and deploy
+
 
 ## Usage
 
