@@ -143,18 +143,21 @@ class PortfolioApp {
         document.getElementById('confirm-password').value = '';
 
         // Show success message with instructions
-        this.showMessage('Password changed successfully! IMPORTANT: You must manually update script.js with your new password hash to make it permanent. Your new hash is: ' + newHash, 'success');
+        this.showMessage(`Password changed successfully! IMPORTANT: You must manually update script.js with your new password hash to make it permanent. Your new hash is: ${newHash}`, 'success');
         
         // Also log the hash to console for easy copying
-        console.log('='.repeat(80));
-        console.log('PASSWORD CHANGE SUCCESSFUL');
-        console.log('='.repeat(80));
-        console.log('Your new password hash is:');
-        console.log(newHash);
-        console.log('');
-        console.log('To make this change permanent, update script.js line 10:');
-        console.log('this.passwordHash = \'' + newHash + '\';');
-        console.log('='.repeat(80));
+        // Note: Clear your browser console after copying the hash for security
+        console.log(`${'='.repeat(80)}
+PASSWORD CHANGE SUCCESSFUL
+${'='.repeat(80)}
+Your new password hash is:
+${newHash}
+
+To make this change permanent, update script.js line 10:
+this.passwordHash = '${newHash}';
+
+SECURITY NOTE: Clear your browser console after copying the hash.
+${'='.repeat(80)}`);
     }
 
     initEventListeners() {
