@@ -7,7 +7,7 @@ class PortfolioApp {
         // This provides basic protection against casual unauthorized edits but is NOT secure against
         // determined users. For production use with sensitive data, implement server-side authentication.
         // To generate hash: See README.md for secure methods
-        this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';  // Default: "portfolio2024"
+        this.passwordHash = 'e5c4a0c13fd3b5b3da2790184649109839b508cd498883efbc60293a259e35b9';  // Default: "portfolio2024"
         this.loadProjects();
         this.initAuth();
         this.initEventListeners();
