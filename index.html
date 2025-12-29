@@ -13,7 +13,6 @@
                 <h1>My Portfolio</h1>
                 <ul class="nav-links">
                     <li><a href="#projects">Projects</a></li>
-                    <li><a href="#upload">Add Project</a></li>
                     <li><a href="#about">About</a></li>
                 </ul>
             </div>
@@ -37,61 +36,6 @@
             </div>
         </section>
 
-        <section id="upload">
-            <div class="container">
-                <h2>Add New Project</h2>
-                <form id="project-form" class="upload-form">
-                    <div class="form-group">
-                        <label for="project-title">Project Title *</label>
-                        <input type="text" id="project-title" name="title" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-description">Description *</label>
-                        <textarea id="project-description" name="description" rows="4" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-category">Category *</label>
-                        <select id="project-category" name="category" required>
-                            <option value="">Select a category</option>
-                            <option value="web">Web Development</option>
-                            <option value="mobile">Mobile App</option>
-                            <option value="data">Data Science</option>
-                            <option value="ai">AI/Machine Learning</option>
-                            <option value="hardware">Hardware/IoT</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-images">Project Images</label>
-                        <input type="file" id="project-images" name="images" accept="image/*" multiple>
-                        <small>Upload screenshots, diagrams, or photos of your project</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-videos">Project Videos</label>
-                        <input type="file" id="project-videos" name="videos" accept="video/*" multiple>
-                        <small>Upload demonstration videos or presentations</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-reports">Project Reports/Documents</label>
-                        <input type="file" id="project-reports" name="reports" accept=".pdf,.doc,.docx,.txt" multiple>
-                        <small>Upload project reports, documentation, or related documents</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project-links">Project Links (GitHub, Demo, etc.)</label>
-                        <input type="text" id="project-links" name="links" placeholder="https://github.com/username/project">
-                    </div>
-
-                    <button type="submit" class="btn-primary">Add Project</button>
-                </form>
-            </div>
-        </section>
-
         <section id="about">
             <div class="container">
                 <h2>About This Portfolio</h2>
@@ -106,6 +50,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="public.js"></script>
 </body>
 </html>

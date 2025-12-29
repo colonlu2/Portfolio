@@ -220,6 +220,49 @@ section h2 {
     max-width: 600px;
 }
 
+/* Authentication Styles */
+.auth-container {
+    max-width: 600px;
+}
+
+.auth-message {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.auth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: #d1fae5;
+    border-radius: 4px;
+    border: 1px solid #10b981;
+}
+
+.auth-status {
+    color: #065f46;
+    font-weight: 500;
+    margin: 0;
+}
+
+.btn-logout {
+    background-color: var(--text-light);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: var(--text-color);
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }

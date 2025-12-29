@@ -2,9 +2,85 @@
 class PortfolioApp {
     constructor() {
         this.projects = [];
+        // Password hash (SHA-256 of "portfolio2024") - Change this to your own password
+        // SECURITY NOTE: This is client-side authentication only - the hash is visible in source code.
+        // This provides basic protection against casual unauthorized edits but is NOT secure against
+        // determined users. For production use with sensitive data, implement server-side authentication.
+        // To generate hash: See README.md for secure methods
+        this.passwordHash = 'e191cdbf5bb9d55705f93723ddb61646823e72c051db47ead5dbf7446b1d0297';  // Default: "portfolio2024"
         this.loadProjects();
+        this.initAuth();
         this.initEventListeners();
         this.renderProjects();
+    }
+
+    initAuth() {
+        const authContainer = document.getElementById('auth-container');
+        const uploadContainer = document.getElementById('upload-container');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Check if user is authenticated
+        if (this.isAuthenticated()) {
+            authContainer.style.display = 'none';
+            uploadContainer.style.display = 'block';
+        } else {
+            authContainer.style.display = 'block';
+            uploadContainer.style.display = 'none';
+        }
+
+        // Login form submission
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = document.getElementById('admin-password').value;
+                await this.handleLogin(password);
+            });
+        }
+
+        // Logout button
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                this.handleLogout();
+            });
+        }
+    }
+
+    async handleLogin(password) {
+        const hash = await this.hashPassword(password);
+        
+        if (hash === this.passwordHash) {
+            sessionStorage.setItem('portfolio_auth', 'true');
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('upload-container').style.display = 'block';
+            document.getElementById('admin-password').value = '';
+            this.showMessage('Successfully logged in!', 'success');
+        } else {
+            this.showMessage('Incorrect password. Please try again.', 'error');
+            document.getElementById('admin-password').value = '';
+        }
+    }
+
+    handleLogout() {
+        sessionStorage.removeItem('portfolio_auth');
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('upload-container').style.display = 'none';
+        this.showMessage('Logged out successfully.', 'success');
+    }
+
+    isAuthenticated() {
+        // Note: sessionStorage can be manipulated via browser dev tools
+        // This is acceptable for a client-side portfolio but not for sensitive applications
+        return sessionStorage.getItem('portfolio_auth') === 'true';
+    }
+
+    async hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
     }
 
     initEventListeners() {
@@ -149,13 +225,15 @@ class PortfolioApp {
         
         container.innerHTML = this.projects.map(project => this.createProjectCard(project)).join('');
         
-        // Add delete event listeners
-        container.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const projectId = parseInt(e.target.dataset.projectId);
-                this.deleteProject(projectId);
+        // Add delete event listeners (only if authenticated)
+        if (this.isAuthenticated()) {
+            container.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const projectId = parseInt(e.target.dataset.projectId);
+                    this.deleteProject(projectId);
+                });
             });
-        });
+        }
 
         // Add media click listeners for modal view
         container.querySelectorAll('.media-thumbnail').forEach(thumb => {
@@ -202,7 +280,7 @@ class PortfolioApp {
                         </div>
                     ` : ''}
                     
-                    <button class="btn-delete" data-project-id="${project.id}">Delete Project</button>
+                    ${this.isAuthenticated() ? `<button class="btn-delete" data-project-id="${project.id}">Delete Project</button>` : ''}
                 </div>
             </div>
         `;
@@ -274,7 +352,7 @@ class PortfolioApp {
     }
 
     showMessage(text, type) {
-        const form = document.getElementById('project-form');
+        const form = document.getElementById('project-form') || document.getElementById('login-form');
         if (!form) return;
 
         const existing = form.parentElement.querySelector('.message');
