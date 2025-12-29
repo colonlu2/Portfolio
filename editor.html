@@ -14,6 +14,7 @@
                 <ul class="nav-links">
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#upload">Add Project</a></li>
+                    <li><a href="#change-password">Change Password</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="index.html">Public View</a></li>
                 </ul>
@@ -109,6 +110,42 @@
 
                         <button type="submit" class="btn-primary">Add Project</button>
                     </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="change-password">
+            <div class="container">
+                <h2>Change Password</h2>
+                
+                <!-- Password Change Form (shown when authenticated) -->
+                <div id="password-change-container" style="display: none;">
+                    <form id="password-change-form" class="upload-form">
+                        <p class="auth-message">Change your editor password. Make sure to remember your new password!</p>
+                        
+                        <div class="form-group">
+                            <label for="current-password">Current Password *</label>
+                            <input type="password" id="current-password" name="current-password" required autocomplete="current-password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-password">New Password *</label>
+                            <input type="password" id="new-password" name="new-password" required autocomplete="new-password">
+                            <small>Choose a strong password</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password *</label>
+                            <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password">
+                        </div>
+
+                        <button type="submit" class="btn-primary">Change Password</button>
+                    </form>
+                </div>
+
+                <!-- Message for unauthenticated users -->
+                <div id="password-change-auth-required" style="display: none;">
+                    <p class="auth-message">Please log in to change your password.</p>
                 </div>
             </div>
         </section>

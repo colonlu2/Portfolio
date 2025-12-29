@@ -17,16 +17,23 @@ class PortfolioApp {
     initAuth() {
         const authContainer = document.getElementById('auth-container');
         const uploadContainer = document.getElementById('upload-container');
+        const passwordChangeContainer = document.getElementById('password-change-container');
+        const passwordChangeAuthRequired = document.getElementById('password-change-auth-required');
         const loginForm = document.getElementById('login-form');
         const logoutBtn = document.getElementById('logout-btn');
+        const passwordChangeForm = document.getElementById('password-change-form');
 
         // Check if user is authenticated
         if (this.isAuthenticated()) {
-            authContainer.style.display = 'none';
-            uploadContainer.style.display = 'block';
+            if (authContainer) authContainer.style.display = 'none';
+            if (uploadContainer) uploadContainer.style.display = 'block';
+            if (passwordChangeContainer) passwordChangeContainer.style.display = 'block';
+            if (passwordChangeAuthRequired) passwordChangeAuthRequired.style.display = 'none';
         } else {
-            authContainer.style.display = 'block';
-            uploadContainer.style.display = 'none';
+            if (authContainer) authContainer.style.display = 'block';
+            if (uploadContainer) uploadContainer.style.display = 'none';
+            if (passwordChangeContainer) passwordChangeContainer.style.display = 'none';
+            if (passwordChangeAuthRequired) passwordChangeAuthRequired.style.display = 'block';
         }
 
         // Login form submission
@@ -44,6 +51,14 @@ class PortfolioApp {
                 this.handleLogout();
             });
         }
+
+        // Password change form submission
+        if (passwordChangeForm) {
+            passwordChangeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handlePasswordChange(e);
+            });
+        }
     }
 
     async handleLogin(password) {
@@ -53,6 +68,10 @@ class PortfolioApp {
             sessionStorage.setItem('portfolio_auth', 'true');
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('upload-container').style.display = 'block';
+            const passwordChangeContainer = document.getElementById('password-change-container');
+            const passwordChangeAuthRequired = document.getElementById('password-change-auth-required');
+            if (passwordChangeContainer) passwordChangeContainer.style.display = 'block';
+            if (passwordChangeAuthRequired) passwordChangeAuthRequired.style.display = 'none';
             document.getElementById('admin-password').value = '';
             this.showMessage('Successfully logged in!', 'success');
         } else {
@@ -65,6 +84,10 @@ class PortfolioApp {
         sessionStorage.removeItem('portfolio_auth');
         document.getElementById('auth-container').style.display = 'block';
         document.getElementById('upload-container').style.display = 'none';
+        const passwordChangeContainer = document.getElementById('password-change-container');
+        const passwordChangeAuthRequired = document.getElementById('password-change-auth-required');
+        if (passwordChangeContainer) passwordChangeContainer.style.display = 'none';
+        if (passwordChangeAuthRequired) passwordChangeAuthRequired.style.display = 'block';
         this.showMessage('Logged out successfully.', 'success');
     }
 
@@ -81,6 +104,63 @@ class PortfolioApp {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         return hashHex;
+    }
+
+    async handlePasswordChange(e) {
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        // Validate new password and confirmation match
+        if (newPassword !== confirmPassword) {
+            this.showMessage('New passwords do not match. Please try again.', 'error');
+            return;
+        }
+
+        // Validate new password is not empty
+        if (newPassword.length === 0) {
+            this.showMessage('New password cannot be empty.', 'error');
+            return;
+        }
+
+        // Verify current password
+        const currentHash = await this.hashPassword(currentPassword);
+        if (currentHash !== this.passwordHash) {
+            this.showMessage('Current password is incorrect.', 'error');
+            document.getElementById('current-password').value = '';
+            return;
+        }
+
+        // Generate new password hash
+        const newHash = await this.hashPassword(newPassword);
+
+        // Update password hash
+        this.passwordHash = newHash;
+
+        // Clear form
+        document.getElementById('current-password').value = '';
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-password').value = '';
+
+        // Show success message (without exposing hash in UI for security)
+        this.showMessage('Password changed successfully! Check the browser console for your new password hash and instructions to make it permanent.', 'success');
+        
+        // Log the hash to console for copying
+        // Note: Clear your browser console after copying the hash for security
+        console.log(`${'='.repeat(80)}
+PASSWORD CHANGE SUCCESSFUL
+${'='.repeat(80)}
+Your new password hash is:
+${newHash}
+
+To make this change permanent:
+1. Open script.js in your editor
+2. Find the line: this.passwordHash = '...'
+3. Replace the hash value with: '${newHash}'
+4. Save the file and redeploy
+
+SECURITY NOTE: Clear your browser console after copying the hash.
+${'='.repeat(80)}`);
     }
 
     initEventListeners() {
@@ -352,7 +432,7 @@ class PortfolioApp {
     }
 
     showMessage(text, type) {
-        const form = document.getElementById('project-form') || document.getElementById('login-form');
+        const form = document.getElementById('project-form') || document.getElementById('login-form') || document.getElementById('password-change-form');
         if (!form) return;
 
         const existing = form.parentElement.querySelector('.message');
