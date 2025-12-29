@@ -44,9 +44,9 @@ class PortfolioApp {
         const reports = formData.getAll('reports');
         
         // Process files
-        const imageFiles = await this.processFiles(images, 'image');
-        const videoFiles = await this.processFiles(videos, 'video');
-        const reportFiles = await this.processFiles(reports, 'document');
+        const imageFiles = await this.processFiles(images);
+        const videoFiles = await this.processFiles(videos);
+        const reportFiles = await this.processFiles(reports);
         
         // Create project object
         const project = {
@@ -80,7 +80,7 @@ class PortfolioApp {
         document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
     }
 
-    async processFiles(files, type) {
+    async processFiles(files) {
         const processedFiles = [];
         
         for (const file of files) {
@@ -174,13 +174,11 @@ class PortfolioApp {
             'hardware': 'Hardware/IoT',
             'other': 'Other'
         };
-
-        const totalMedia = project.images.length + project.videos.length + project.reports.length;
         
-        // Get first image as thumbnail
+        // Get first image as thumbnail or use placeholder
         const thumbnail = project.images.length > 0 
             ? project.images[0].dataUrl 
-            : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3Ctext fill="%236b7280" font-family="Arial" font-size="20" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
+            : this.getPlaceholderImage();
 
         return `
             <div class="project-card">
@@ -269,6 +267,10 @@ class PortfolioApp {
             this.renderProjects();
             this.showMessage('Project deleted successfully!', 'success');
         }
+    }
+
+    getPlaceholderImage() {
+        return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3Ctext fill="%236b7280" font-family="Arial" font-size="20" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
     }
 
     showMessage(text, type) {
