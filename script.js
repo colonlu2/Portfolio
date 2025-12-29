@@ -220,27 +220,55 @@ ${'='.repeat(80)}`);
         // Add to projects array
         this.projects.unshift(project);
         
-        // Save to localStorage
-        this.saveProjects();
-        
-        // Render projects
-        this.renderProjects();
-        
-        // Reset form
-        form.reset();
-        
-        // Show success message
-        this.showMessage('Project added successfully!', 'success');
-        
-        // Scroll to projects section
-        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        // Try to save to localStorage
+        try {
+            this.saveProjects();
+            
+            // Render projects
+            this.renderProjects();
+            
+            // Reset form
+            form.reset();
+            
+            // Show success message
+            this.showMessage('Project added successfully!', 'success');
+            
+            // Scroll to projects section
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            // If save fails, remove the project we just added
+            this.projects.shift();
+            // Error message already shown by saveProjects()
+        }
     }
 
     async processFiles(files) {
         const processedFiles = [];
         
+        // Size limits (in bytes)
+        const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB per image
+        const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB per video
+        const MAX_REPORT_SIZE = 5 * 1024 * 1024; // 5MB per report
+        
         for (const file of files) {
             if (file && file.size > 0) {
+                let maxSize = MAX_IMAGE_SIZE;
+                
+                // Determine max size based on file type
+                if (file.type.startsWith('video/')) {
+                    maxSize = MAX_VIDEO_SIZE;
+                } else if (file.type === 'application/pdf' || file.type.includes('document')) {
+                    maxSize = MAX_REPORT_SIZE;
+                }
+                
+                // Check file size
+                if (file.size > maxSize) {
+                    const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+                    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                    this.showMessage(`File "${file.name}" is too large (${fileSizeMB}MB). Maximum size is ${maxSizeMB}MB.`, 'error');
+                    continue;
+                }
+                
                 try {
                     const dataUrl = await this.readFileAsDataURL(file);
                     processedFiles.push({
@@ -251,6 +279,7 @@ ${'='.repeat(80)}`);
                     });
                 } catch (error) {
                     console.error('Error processing file:', error);
+                    this.showMessage(`Error processing file "${file.name}". Please try again.`, 'error');
                 }
             }
         }
@@ -269,12 +298,22 @@ ${'='.repeat(80)}`);
 
     saveProjects() {
         try {
-            localStorage.setItem('portfolio_projects', JSON.stringify(this.projects));
+            const projectsData = JSON.stringify(this.projects);
+            const storageSize = projectsData.length / (1024 * 1024); // in MB
+            
+            localStorage.setItem('portfolio_projects', projectsData);
+            
+            // Log storage usage for debugging
+            console.log(`Portfolio storage: ${storageSize.toFixed(2)}MB`);
         } catch (error) {
             console.error('Error saving projects:', error);
             if (error.name === 'QuotaExceededError') {
-                this.showMessage('Storage limit exceeded. Please use smaller files or delete old projects.', 'error');
+                this.showMessage('Storage limit exceeded! Please use smaller files, fewer files per project, or delete some old projects.', 'error');
+                console.error('Storage quota exceeded. To free up space: delete old projects, use smaller image/video files, or reduce file quantities.');
+            } else {
+                this.showMessage('Error saving project. Please try again.', 'error');
             }
+            throw error; // Re-throw so the form submission fails gracefully
         }
     }
 
